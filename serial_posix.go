@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"os"
 	"syscall"
 	"time"
 	"unsafe"
@@ -256,7 +255,8 @@ func enableRS485(fd int, config *RS485Config) error {
 		uintptr(rs485Tiocs),
 		uintptr(unsafe.Pointer(&rs485)))
 	if errno != 0 {
-		return os.NewSyscallError("SYS_IOCTL (RS485)", errno)
+		return fmt.Errorf("syscall.SYS_IOCTL: %v, fd: %v, rs485Tiocs: %x, rs485: %+v", syscall.SYS_IOCTL, fd, rs485Tiocs, rs485)
+		//return os.NewSyscallError("SYS_IOCTL (RS485)", errno)
 	}
 	if r != 0 {
 		return errors.New("serial: unknown error from SYS_IOCTL (RS485)")
